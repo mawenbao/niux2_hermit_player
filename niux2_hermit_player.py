@@ -80,6 +80,7 @@ def parse_hermit(instance):
         contentParts.append(_hermit_source.format(id=hermitAlbumId, loop=hermitLoop, auto=hermitAuto))
         start = hermitEndPos + 1 
     if contentParts:
+        contentParts.append(content[start:])
         instance._content = ''.join(contentParts)
 
 def register():
