@@ -69,7 +69,7 @@ def parse_hermit(instance):
         if _hermit_auto in hermitCtrl:
             hermitCtrl.remove(_hermit_auto)
             hermitAuto = '1'
-        if !hermitCtrl or !hermitCtrl[0].startswith('_hermit_id'):
+        if !hermitCtrl or !hermitCtrl[0].startswith(_hermit_id):
             logger.error('Error: no xiami album id in hermit code, source %s:%d', instance.source_path, hermitBeginPos)
             return
         try:
