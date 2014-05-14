@@ -55,8 +55,9 @@ def parse_hermit(instance):
             break
         hermitEndPos = content[hermitBeginPos:].find(_hermit_end_code)
         if -1 == hermitEndPos:
-            logger.error('Error: no end bracket found for [hermit in source %s:%d', instance.source_path, hermitBeginPos)
+            logger.error('no end bracket found for [hermit in source %s:%d', instance.source_path, hermitBeginPos)
             return
+        hermitEndPos += hermitBeginPos
         if content[start : hermitBeginPos]:
             contentParts.append(content[start : hermitBeginPos])
         hermitCode = content[hermitBeginPos + len(_hermit_begin_code) : hermitEndPos]
@@ -69,13 +70,13 @@ def parse_hermit(instance):
         if _hermit_auto in hermitCtrl:
             hermitCtrl.remove(_hermit_auto)
             hermitAuto = '1'
-        if !hermitCtrl or !hermitCtrl[0].startswith(_hermit_id):
-            logger.error('Error: no xiami album id in hermit code, source %s:%d', instance.source_path, hermitBeginPos)
+        if not hermitCtrl or not hermitCtrl[0].startswith(_hermit_id):
+            logger.error('no xiami album id in hermit code, source %s:%d', instance.source_path, hermitBeginPos)
             return
         try:
             hermitAlbumId = int(hermitCtrl[0].split('=')[1])
         except Exception as e:
-            logger.error('Error: failed to extrace xiami album id from hermit code: %s: source %s:%d', e, instance.source_path, hermitBeginPos)
+            logger.error('failed to extrace xiami album id from hermit code: %s: source %s:%d', e, instance.source_path, hermitBeginPos)
             return
         contentParts.append(_hermit_source.format(id=hermitAlbumId, loop=hermitLoop, auto=hermitAuto))
         start = hermitEndPos + 1 
