@@ -22,7 +22,6 @@ _hermit_source = '''
             <div class="hermit-button">
             </div>
             <div class="hermit-detail">
-                单击鼠标左键播放或暂停。
             </div>
             <div class="hermit-duration">
             </div>
