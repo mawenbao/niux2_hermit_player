@@ -26,6 +26,8 @@ _hermit_source = '''
             </div>
             <div class="hermit-duration">
             </div>
+            <div class="hermit-volume">
+            </div>
             <div class="hermit-listbutton">
             </div>
         </div>
