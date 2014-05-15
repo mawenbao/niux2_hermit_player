@@ -2,11 +2,10 @@
 """
 Hermit player(http://mufeng.me/hermit-for-wordpress.html) plugin for niu-x2-sidebar theme.
 
-This plugin replaces the [hermit id=[0-9]+ loop auto] with hermit player html structure.
+This plugin replaces [hermit id=[0-9]+ loop auto nolist] with the hermit player html structure.
 """
 
-from pelican import signals
-import re
+import pelican
 import logging
 
 logger = logging.getLogger(__name__)
@@ -15,6 +14,7 @@ _hermit_end_code = ']'
 _hermit_loop = 'loop'
 _hermit_auto = 'auto'
 _hermit_id = 'id'
+_hermit_nolist = 'nolist'
 _hermit_source = '''
 <div class="hermit" songs="collect#:{id}" loop="{loop}" auto="{auto}">
     <div class="hermit-box">
@@ -38,7 +38,7 @@ _hermit_source = '''
             </div>
         </div>
     </div>
-    <div class="hermit-list">
+    <div class="hermit-list" style="{nolist}">
     </div>
 </div>
 '''
@@ -64,26 +64,30 @@ def parse_hermit(instance):
         hermitCtrl = hermitCode.split()
         hermitLoop = '0'
         hermitAuto = '0'
+        hermitNoList = ''
         if _hermit_loop in hermitCtrl:
             hermitCtrl.remove(_hermit_loop)
             hermitLoop = '1'
         if _hermit_auto in hermitCtrl:
             hermitCtrl.remove(_hermit_auto)
             hermitAuto = '1'
+        if _hermit_nolist in hermitCtrl:
+            hermitCtrl.remove(_hermit_nolist)
+            hermitNoList = 'display:none'
         if not hermitCtrl or not hermitCtrl[0].startswith(_hermit_id):
             logger.error('no xiami album id in hermit code, source %s:%d', instance.source_path, hermitBeginPos)
             return
         try:
             hermitAlbumId = int(hermitCtrl[0].split('=')[1])
         except Exception as e:
-            logger.error('failed to extrace xiami album id from hermit code: %s: source %s:%d', e, instance.source_path, hermitBeginPos)
+            logger.error('failed to extract xiami album id from hermit code: %s: source %s:%d', e, instance.source_path, hermitBeginPos)
             return
-        contentParts.append(_hermit_source.format(id=hermitAlbumId, loop=hermitLoop, auto=hermitAuto))
+        contentParts.append(_hermit_source.format(id=hermitAlbumId, loop=hermitLoop, auto=hermitAuto, nolist=hermitNoList))
         start = hermitEndPos + 1 
     if contentParts:
         contentParts.append(content[start:])
         instance._content = ''.join(contentParts)
 
 def register():
-    signals.content_object_init.connect(parse_hermit)
+    pelican.signals.content_object_init.connect(parse_hermit)
 
