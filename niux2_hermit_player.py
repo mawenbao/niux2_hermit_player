@@ -17,7 +17,7 @@ _hermit_xiami = 'xiami'
 _hermit_netease = 'netease'
 _hermit_nolist = 'nolist'
 _hermit_source = '''
-<div class="hermit" xiami="collect#:{xiami}" netease="{netease}" loop="{loop}" auto="{auto}">
+<div class="hermit" xiami="{xiami}" netease="{netease}" loop="{loop}" auto="{auto}">
     <div class="hermit-box">
         <div class="hermit-controls">
             <div class="hermit-button">
