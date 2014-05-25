@@ -13,10 +13,11 @@ _hermit_begin_code = '[hermit'
 _hermit_end_code = ']'
 _hermit_loop = 'loop'
 _hermit_auto = 'auto'
-_hermit_id = 'id'
+_hermit_xiami = 'xiami'
+_hermit_netease = 'netease'
 _hermit_nolist = 'nolist'
 _hermit_source = '''
-<div class="hermit" songs="collect#:{id}" loop="{loop}" auto="{auto}">
+<div class="hermit" xiami="collect#:{xiami}" netease="{netease}" loop="{loop}" auto="{auto}">
     <div class="hermit-box">
         <div class="hermit-controls">
             <div class="hermit-button">
@@ -67,6 +68,8 @@ def parse_hermit(instance):
         hermitLoop = '0'
         hermitAuto = '0'
         hermitNoList = ''
+        hermitXiami = ''
+        hermitNetease = ''
         if _hermit_loop in hermitCtrl:
             hermitCtrl.remove(_hermit_loop)
             hermitLoop = '1'
@@ -76,16 +79,21 @@ def parse_hermit(instance):
         if _hermit_nolist in hermitCtrl:
             hermitCtrl.remove(_hermit_nolist)
             hermitNoList = 'display:none'
-        if not hermitCtrl or not hermitCtrl[0].startswith(_hermit_id):
-            logger.error('no xiami album id in hermit code, source %s:%d', instance.source_path, hermitBeginPos)
+        if not hermitCtrl:
+            logger.error('no album id in hermit code, source %s:%d', instance.source_path, hermitBeginPos)
             return
         try:
-            hermitAlbumId = int(hermitCtrl[0].split('=')[1])
+            for idstr in hermitCtrl:
+                albumId = int(idstr.split('=')[1])
+                if idstr.startswith(_hermit_xiami):
+                    hermitXiami = "collect#:{}".format(albumId)
+                if idstr.startswith(_hermit_netease):
+                    hermitNetease = "{}".format(albumId)
         except Exception as e:
-            logger.error('failed to extract xiami album id from hermit code: %s: source %s:%d', e, instance.source_path, hermitBeginPos)
+            logger.error('failed to extract album id from hermit code: %s: source %s:%d', e, instance.source_path, hermitBeginPos)
             return
-        contentParts.append(_hermit_source.format(id=hermitAlbumId, loop=hermitLoop, auto=hermitAuto, nolist=hermitNoList))
-        start = hermitEndPos + 1 
+        contentParts.append(_hermit_source.format(xiami=hermitXiami, netease=hermitNetease, loop=hermitLoop, auto=hermitAuto, nolist=hermitNoList))
+        start = hermitEndPos + 1
     if contentParts:
         contentParts.append(content[start:])
         instance._content = ''.join(contentParts)
