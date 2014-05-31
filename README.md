@@ -4,10 +4,9 @@
 
 ## Usage
 
-    [hermit xiami=12345678 netease=12345 loop auto nolist]
+    [hermit xiami=12345678 loop auto nolist]
 
 * xiami: xiami album id
-* netease: music.163 id, require additional ajax proxy in the same domain.
 * loop: play songs in a loop , optional attribute
 * auto: start playing on page loaded, optional attribute
 * nolist: do not show playlist, optional attribute
