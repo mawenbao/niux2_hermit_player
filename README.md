@@ -4,10 +4,10 @@
 
 ## Usage
 
-    [hermit xiami=12345678 loop auto nolist]
+    [hermit xiami=12345678 loop auto nolist {title|url|author}]
 
 * xiami: xiami album id
 * loop: play songs in a loop , optional attribute
 * auto: start playing on page loaded, optional attribute
 * nolist: do not show playlist, optional attribute
-
+* {title|url|author}: additional songs, where author is optional

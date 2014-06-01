@@ -7,6 +7,7 @@ This plugin replaces [hermit id=[0-9]+ loop auto nolist] with the hermit player 
 
 import pelican
 import logging
+import os
 
 logger = logging.getLogger(__name__)
 _hermit_begin_code = '[hermit'
@@ -16,6 +17,8 @@ _hermit_auto = 'auto'
 _hermit_xiami = 'xiami'
 _hermit_netease = 'netease'
 _hermit_nolist = 'nolist'
+_hermit_song_begin = '{'
+_hermit_song_end = '}'
 _hermit_source = '''
 <div class="hermit" xiami="{xiami}" netease="{netease}" loop="{loop}" auto="{auto}">
     <div class="hermit-box">
@@ -43,8 +46,38 @@ _hermit_source = '''
     </div>
     <div class="hermit-list" style="{nolist}">
     </div>
+    <div class="hermit-add-list" style="{nolist}">
+        {songs}
+    </div>
 </div>
 '''
+_hermit_add_song_source = '''
+<div class="hermit-add-song" data-url="{url}" data-title="{title}" data-author="{author}"></div>
+'''
+
+def parse_songs(hermitCode):
+    if not hermitCode:
+        logger.error('hermit code is invalid')
+        return
+    songs = ''
+    while _hermit_song_begin in hermitCode:
+        songBeginPos = hermitCode.find(_hermit_song_begin)
+        songEndPos = hermitCode.find(_hermit_song_end)
+        if songBeginPos > songEndPos:
+            logger.error('malformed hermit song')
+            return
+        songCode = hermitCode[songBeginPos + 1 : songEndPos]
+        if songCode:
+            songAttrs = songCode.split('|')
+            if len(songAttrs) < 2:
+                logger.error('hermit song format is invalid')
+                return
+            songTitle = songAttrs[0]
+            songUrl = songAttrs[1]
+            songAuthor = songAttrs[2] if len(songAttrs) == 3 else ''
+            songs += _hermit_add_song_source.format(url=songUrl, title=songTitle, author=songAuthor)
+        hermitCode = hermitCode[:songBeginPos] + hermitCode[songEndPos + 1:]
+    return songs, hermitCode
 
 def parse_hermit(instance):
     if instance._content is None:
@@ -64,6 +97,7 @@ def parse_hermit(instance):
         if content[start : hermitBeginPos]:
             contentParts.append(content[start : hermitBeginPos])
         hermitCode = content[hermitBeginPos + len(_hermit_begin_code) : hermitEndPos]
+        hermitSongs, hermitCode = parse_songs(hermitCode)
         hermitCtrl = hermitCode.split()
         hermitLoop = '0'
         hermitAuto = '0'
@@ -92,7 +126,7 @@ def parse_hermit(instance):
         except Exception as e:
             logger.error('failed to extract album id from hermit code: %s: source %s:%d', e, instance.source_path, hermitBeginPos)
             return
-        contentParts.append(_hermit_source.format(xiami=hermitXiami, netease=hermitNetease, loop=hermitLoop, auto=hermitAuto, nolist=hermitNoList))
+        contentParts.append(_hermit_source.format(xiami=hermitXiami, netease=hermitNetease, loop=hermitLoop, auto=hermitAuto, nolist=hermitNoList, songs=hermitSongs))
         start = hermitEndPos + 1
     if contentParts:
         contentParts.append(content[start:])
