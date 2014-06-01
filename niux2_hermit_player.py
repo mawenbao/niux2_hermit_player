@@ -69,13 +69,10 @@ def parse_songs(hermitCode):
         songCode = hermitCode[songBeginPos + 1 : songEndPos]
         if songCode:
             songAttrs = songCode.split('|')
-            if len(songAttrs) < 2:
-                logger.error('hermit song format is invalid')
+            if len(songAttrs) != 3:
+                logger.error('hermit song format is invalid, it should be {title|author|url} (author could be empty)')
                 return
-            songTitle = songAttrs[0]
-            songUrl = songAttrs[1]
-            songAuthor = songAttrs[2] if len(songAttrs) == 3 else ''
-            songs += _hermit_add_song_source.format(url=songUrl, title=songTitle, author=songAuthor)
+            songs += _hermit_add_song_source.format(title=songAttrs[0], author=songAttrs[1], url=songAttrs[2])
         hermitCode = hermitCode[:songBeginPos] + hermitCode[songEndPos + 1:]
     return songs, hermitCode
 
