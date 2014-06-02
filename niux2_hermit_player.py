@@ -110,7 +110,7 @@ def parse_hermit(instance):
         if _hermit_nolist in hermitCtrl:
             hermitCtrl.remove(_hermit_nolist)
             hermitNoList = 'display:none'
-        if not hermitSongs or not hermitCtrl:
+        if not hermitSongs and not hermitCtrl:
             logger.error('no album id in hermit code, source %s:%d', instance.source_path, hermitBeginPos)
             return
         try:
