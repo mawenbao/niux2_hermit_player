@@ -2,7 +2,7 @@
 """
 Hermit player(http://mufeng.me/hermit-for-wordpress.html) plugin for niu-x2-sidebar theme.
 
-This plugin replaces [hermit id=[0-9]+ loop auto nolist] with the hermit player html structure.
+This plugin replaces [hermit xiami=collect#:12345678 loop auto nolist] with the hermit player html structure.
 """
 
 import pelican
@@ -113,16 +113,12 @@ def parse_hermit(instance):
         if not hermitSongs and not hermitCtrl:
             logger.error('no album id in hermit code, source %s:%d', instance.source_path, hermitBeginPos)
             return
-        try:
-            for idstr in hermitCtrl:
-                albumId = int(idstr.split('=')[1])
-                if idstr.startswith(_hermit_xiami):
-                    hermitXiami = "collect#:{}".format(albumId)
-                if idstr.startswith(_hermit_netease):
-                    hermitNetease = "{}".format(albumId)
-        except Exception as e:
-            logger.error('failed to extract album id from hermit code: %s: source %s:%d', e, instance.source_path, hermitBeginPos)
-            return
+        for idstr in hermitCtrl:
+            albumId = idstr.split('=')[1]
+            if idstr.startswith(_hermit_xiami):
+                hermitXiami = "{}".format(albumId)
+            if idstr.startswith(_hermit_netease):
+                hermitNetease = "{}".format(albumId)
         contentParts.append(_hermit_source.format(xiami=hermitXiami, netease=hermitNetease, loop=hermitLoop, auto=hermitAuto, nolist=hermitNoList, songs=hermitSongs))
         start = hermitEndPos + 1
     if contentParts:
