@@ -4,9 +4,9 @@
 
 ## Usage
 
-    [hermit xiami=collect#:12345678 loop auto nolist {title|author|url}]
+    [hermit xiami=collect:12345678 loop auto nolist {title|author|url}]
 
-* xiami: xiami album id. collect#, album# and songlist# are all supported.
+* xiami: xiami album id. collect, album and songlist are all supported.
 * loop: play songs in a loop , optional attribute
 * auto: start playing on page loaded, optional attribute
 * nolist: do not show playlist, optional attribute

@@ -2,7 +2,7 @@
 """
 Hermit player(http://mufeng.me/hermit-for-wordpress.html) plugin for niu-x2-sidebar theme.
 
-This plugin replaces [hermit xiami=collect#:12345678 loop auto nolist] with the hermit player html structure.
+This plugin replaces [hermit xiami=collect:12345678 loop auto nolist] with the hermit player html structure.
 """
 
 import pelican
