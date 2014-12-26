@@ -86,6 +86,7 @@ def parse_hermit(instance):
         hermitBeginPos = content[start:].find(_hermit_begin_code)
         if -1 == hermitBeginPos:
             break
+        hermitBeginPos += start
         hermitEndPos = content[hermitBeginPos:].find(_hermit_end_code)
         if -1 == hermitEndPos:
             logger.error('no end bracket found for [hermit in source %s:%d', instance.source_path, hermitBeginPos)
