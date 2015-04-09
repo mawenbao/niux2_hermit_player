@@ -10,16 +10,16 @@ import logging
 import os
 
 logger = logging.getLogger(__name__)
-_hermit_begin_code = '[hermit'
-_hermit_end_code = ']'
-_hermit_loop = 'loop'
-_hermit_auto = 'auto'
-_hermit_xiami = 'xiami'
-_hermit_netease = 'netease'
-_hermit_nolist = 'nolist'
-_hermit_song_begin = '{'
-_hermit_song_end = '}'
-_hermit_source = '''
+_hermit_begin_code = u'[hermit'
+_hermit_end_code = u']'
+_hermit_loop = u'loop'
+_hermit_auto = u'auto'
+_hermit_xiami = u'xiami'
+_hermit_netease = u'netease'
+_hermit_nolist = u'nolist'
+_hermit_song_begin = u'{'
+_hermit_song_end = u'}'
+_hermit_source = u'''
 <div class="hermit" xiami="{xiami}" netease="{netease}" loop="{loop}" auto="{auto}">
     <div class="hermit-box">
         <div class="hermit-controls">
@@ -51,7 +51,7 @@ _hermit_source = '''
     </div>
 </div>
 '''
-_hermit_add_song_source = '''
+_hermit_add_song_source = u'''
 <div class="hermit-add-song" data-url="{url}" data-title="{title}" data-author="{author}"></div>
 '''
 
@@ -124,7 +124,7 @@ def parse_hermit(instance):
         start = hermitEndPos + 1
     if contentParts:
         contentParts.append(content[start:])
-        instance._content = ''.join(contentParts)
+        instance._content = u''.join(contentParts)
 
 def register():
     pelican.signals.content_object_init.connect(parse_hermit)
